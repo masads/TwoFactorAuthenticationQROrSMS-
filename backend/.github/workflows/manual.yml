@@ -1,0 +1,24 @@
+name: Build and deploy
+'on':
+  push:
+    branches:
+      - master
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy to DigitalOcean Droplet
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{secrets.ALPHACODERZ_SERVER_IP}}
+          username:  ${{ secrets.SSH_USERNAME }}
+          key: ${{secrets.ALPHACODERZ_SSH_KEY}}
+          script: |
+            cd /var/www/rentapp_backend/
+            eval `ssh-agent -s`
+            ssh-add /home/asad/.ssh/rentap_backend_ssh
+            git pull origin master
+            npm run swagger-autogen 
+            npm install
+            pm2 restart npm
