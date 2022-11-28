@@ -7,6 +7,7 @@ import Login from "../screens/login/Login";
 import Register from "../screens/register/Register";
 import Welcome from "../screens/welcome/Welcome";
 import Otp from "../screens/otp/Otp";
+import QR from "../screens/qr/QR";
 
 const Stack = createStackNavigator();
 
@@ -41,6 +42,7 @@ export default function AuthNavigation() {
       <Stack.Screen name="Login" component={Login} />
       <Stack.Screen name="Register" component={Register} />
       <Stack.Screen name="otp" component={Otp} />
+      <Stack.Screen name="qr" component={QR} />
     </Stack.Navigator>
   );
 }

@@ -10,6 +10,8 @@ import Alert from "../../components/alert/Alert";
 import { useDispatch, useSelector } from "react-redux";
 import auth from "../../services/auth/Auth";
 import { authSlice } from "../../store/slices/AuthSlice";
+import { appSlice } from "../../store/slices/AppSlice"
+import { setToken } from "../../store/actions/AppActions"
 import Header from "../../components/header/header";
 
 function Register({ previous, navigation }) {
@@ -44,6 +46,7 @@ function Register({ previous, navigation }) {
     });
     if (response.status) {
       dispatch(setToken({ token: response.token, secure: true, userId: response.userId }))
+      dispatch(appSlice.actions.login({ name: usernameRef.current.getValue(), mobileNumber: mobileNumberRef.current.getValue(), email: emailRef.current.getValue(), id: response.userId, type: "otp" }))
     } else {
       if (alert) return;
       if (response.duplicate) {

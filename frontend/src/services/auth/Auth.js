@@ -82,7 +82,7 @@ async function getUserData(userId, token) {
       headers: { Authorization: `Bearer ${token}` }
     };
     const result = await client.get(`/getUserData?id=${userId}`, config);
-    console.log(result.data)
+
     if (result.data) {
       return { status: true, data: result.data };
     }
@@ -95,6 +95,29 @@ async function getUserData(userId, token) {
   }
 }
 
-const auth = { Login, Register, vertifyOtp, getUserData };
+async function changeAuthType(userId, token, type) {
+  try {
+    console.log(userId, token, type)
+    const config = {
+      headers: { Authorization: `Bearer ${token}` }
+    };
+    const result = await client.post(`/changeAuthType`, {
+      userId,
+      type
+    }, config);
+
+    if (result.status == 200) {
+      return { status: true };
+    }
+    else {
+      throw ("Something went wrong", result);
+    }
+  } catch (error) {
+    console.log("changeAuthType failed", error);
+    return { status: false };
+  }
+}
+
+const auth = { Login, Register, vertifyOtp, getUserData, changeAuthType };
 
 export default auth;

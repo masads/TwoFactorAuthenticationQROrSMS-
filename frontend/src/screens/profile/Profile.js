@@ -1,14 +1,25 @@
-import { Text, View, Pressable, Image } from "react-native";
-import { AntDesign, Feather } from "@expo/vector-icons";
+import { Text, View, Pressable, Image, Switch } from "react-native";
+import { AntDesign, Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import Style from "./Style";
 import { useSelector, useDispatch } from "react-redux";
 import { logOut } from '../../store/actions/AppActions';
 import { normalize } from "../../styles/Style";
 import Theme from "../../styles/Theme";
+import { changeAuthType } from "../../store/actions/AppActions"
 
 function Profile({ navigation }) {
-    const { name } = useSelector(({ appSlice }) => appSlice);
+    const { name, type } = useSelector(({ appSlice }) => appSlice);
     const dispatch = useDispatch();
+
+
+    const toggleSwitch = () => {
+        console.log("google")
+        if (type == 'otp') {
+            dispatch(changeAuthType("qr"));
+        } else {
+            dispatch(changeAuthType("otp"));
+        }
+    };
 
     return (
         <View style={Style.container}>
@@ -29,19 +40,30 @@ function Profile({ navigation }) {
                     <Text style={Style.headerProfileText} >{name}</Text>
                 </View>
             </View>
-            {/* <Pressable onPress={() => { dispatch(logOut()) }}>
-                <Text>Log out</Text>
-            </Pressable>
-            <View>
-                <Text>{name}</Text>
-            </View> */}
             <View style={Style.dividerView} >
                 <View style={Style.divider} >
                 </View>
             </View>
             <View style={Style.list}>
                 <View style={Style.item}>
-                    <View style={Style.itemLeft} onPress={() => { console.log("first") }}>
+                    <View style={Style.itemLeft} >
+                        <MaterialCommunityIcons name="two-factor-authentication" size={normalize(20)} color={Theme.color.black} />
+                        <Text style={[{ color: Theme.color.black }, Style.itemText]} >{type.toUpperCase()}</Text>
+                    </View>
+
+                    <View style={{ marginLeft: 5 }} >
+                        <Switch
+                            trackColor={{ false: Theme.color.lightGray, true: Theme.color.primaryLite }}
+                            thumbColor={type == 'qr' ? Theme.color.primary : Theme.color.gray}
+                            onValueChange={toggleSwitch}
+                            value={type == 'qr'}
+
+                        />
+                    </View>
+                </View>
+                <View style={Style.item}>
+
+                    <View style={Style.itemLeft} >
                         <Feather name="edit" size={normalize(20)} color={Theme.color.black} />
                         <Text style={[{ color: Theme.color.black }, Style.itemText]} >Profile</Text>
                     </View>
@@ -51,7 +73,7 @@ function Profile({ navigation }) {
 
                 </View>
                 <View style={Style.item}>
-                    <View style={Style.itemLeft} onPress={() => { console.log("first") }}>
+                    <View style={Style.itemLeft} >
                         <Feather name="settings" size={normalize(20)} color={Theme.color.black} />
                         <Text style={[{ color: Theme.color.black }, Style.itemText]} >Setting</Text>
                     </View>
@@ -60,7 +82,7 @@ function Profile({ navigation }) {
                     </Pressable>
                 </View>
                 <View style={Style.item}>
-                    <View style={Style.itemLeft} onPress={() => { console.log("first") }}>
+                    <View style={Style.itemLeft} >
                         <Feather name="help-circle" size={normalize(20)} color={Theme.color.black} />
                         <Text style={[{ color: Theme.color.black }, Style.itemText]} >Help Center</Text>
                     </View>

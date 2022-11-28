@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import appActions, { getToken, setToken, logOut } from "../actions/AppActions";
+import appActions, { getToken, setToken, logOut, changeAuthType } from "../actions/AppActions";
 
 export const appSlice = createSlice({
   name: "appSlice",
@@ -9,7 +9,8 @@ export const appSlice = createSlice({
     userId: "",
     name: "",
     mobileNumber: "",
-    loading: true
+    loading: true,
+    type: ""
   },
   reducers: appActions,
   extraReducers: {
@@ -27,6 +28,7 @@ export const appSlice = createSlice({
       state.name = payload.name;
       state.email = payload.email;
       state.mobileNumber = payload.mobileNumber;
+      state.type = payload.type;
       state.loading = false;
     },
     [setToken.pending]: (state, _) => {
@@ -46,8 +48,22 @@ export const appSlice = createSlice({
       state.token = "";
     },
     [logOut.fulfilled]: (state, { payload }) => {
-      console.log(payload)
+      console.log("wowwwwwww", payload)
       state.token = "";
+      state.email = "";
+      state.userId = "";
+      state.name = "";
+      state.mobileNumber = "";
+      state.type = "";
+
+    },
+    [changeAuthType.pending]: (state, _) => {
+    },
+    [changeAuthType.rejected]: (state, payload) => {
+      state.type = payload == 'qr' ? 'otp' : 'qr';
+    },
+    [changeAuthType.fulfilled]: (state, { payload }) => {
+      state.type = payload;
     },
   }
 });

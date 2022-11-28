@@ -34,13 +34,21 @@ function Login({ previous, navigation }) {
     console.log("useEffect - Login Component");
   }, []);
   const handleLogin = useCallback(async () => {
+    console.log("button press")
     const response = await auth.Login({
       mobileNumber: Number(mobileNumberRef.current.getValue()),
       password: passwordRef.current.getValue(),
     });
+    console.log(response)
     if (response.status) {
       dispatch(appSlice.actions.login(response.data))
-      navigation.navigate("otp");
+      if (response.data.type == "otp") {
+
+        navigation.navigate("otp");
+      } else {
+        navigation.navigate("qr");
+      }
+
     } else {
       if (alert) return;
       dispatch(

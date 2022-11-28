@@ -12,7 +12,7 @@ export const getToken = createAsyncThunk(
       const result = await auth.getUserData(userId, token);
       if (!result.status) throw ""
 
-      return { token, userId, name: result.data.name, email: result.data.email, mobileNumber: result.data.mobileNumber };
+      return { token, userId, name: result.data.name, email: result.data.email, mobileNumber: result.data.mobileNumber, type: result.data.type };
 
     } catch (error) {
       await SecureStore.deleteItemAsync("token");
@@ -25,7 +25,7 @@ export const getToken = createAsyncThunk(
 export const setToken = createAsyncThunk(
   "appSlice/setToken",
   async ({ token, secure = false, userId }, { rejectWithValue }) => {
-    console.log(token, secure)
+    console.log("sad", token, secure)
     if (secure) {
       await SecureStore.setItemAsync("token", token);
       await SecureStore.setItemAsync("userId", userId);
@@ -43,12 +43,28 @@ export const logOut = createAsyncThunk(
   }
 );
 
-function login(state, { payload: { name, mobileNumber, email, id } }) {
+function login(state, { payload: { name, mobileNumber, email, id, type } }) {
   state.email = email;
   state.mobileNumber = mobileNumber;
   state.userId = id;
   state.name = name;
+  state.type = type;
 }
+
+export const changeAuthType = createAsyncThunk(
+  "appSlice/changeAuthType",
+  async (data, { getState, rejectWithValue }) => {
+    try {
+      const state = getState();
+
+      const result = await auth.changeAuthType(state.appSlice.userId, state.appSlice.token, data);
+      if (!result.status) throw ""
+      return data;
+    } catch (error) {
+      return rejectWithValue(data);
+    }
+  }
+);
 
 const appActions = {
   login
